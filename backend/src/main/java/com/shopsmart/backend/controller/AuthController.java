@@ -1,10 +1,13 @@
 package com.shopsmart.backend.controller;
 
+import com.shopsmart.backend.dto.LoginRequest;
 import com.shopsmart.backend.dto.RegisterRequest;
 import com.shopsmart.backend.entity.User;
 import com.shopsmart.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -25,5 +28,18 @@ public class AuthController {
         userRepository.save(user);
 
         return "User registered successfully";
+    }
+
+    @PostMapping("/login")
+    public String login(@RequestBody LoginRequest request) {
+
+        Optional<User> user = userRepository.findByEmail(request.getEmail());
+
+        if (user.isPresent() &&
+                user.get().getPassword().equals(request.getPassword())) {
+            return "Login successful";
+        }
+
+        return "Invalid credentials";
     }
 }
