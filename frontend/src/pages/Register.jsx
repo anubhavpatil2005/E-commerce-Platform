@@ -1,6 +1,36 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import api from "../services/api";
 
 function Register() {
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      await api.post("/auth/register", formData);
+      alert("Registration successful!");
+      navigate("/login");
+    } catch (error) {
+      alert("Registration failed");
+      console.error(error);
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
       <div className="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md">
@@ -8,13 +38,16 @@ function Register() {
           Register
         </h2>
 
-        <form className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
             <label className="block mb-2 font-medium">Full Name</label>
             <input
               type="text"
+              name="name"
               placeholder="Enter your full name"
-              className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={formData.name}
+              onChange={handleChange}
+              className="w-full px-4 py-3 border rounded-lg"
             />
           </div>
 
@@ -22,8 +55,11 @@ function Register() {
             <label className="block mb-2 font-medium">Email</label>
             <input
               type="email"
+              name="email"
               placeholder="Enter your email"
-              className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full px-4 py-3 border rounded-lg"
             />
           </div>
 
@@ -31,14 +67,17 @@ function Register() {
             <label className="block mb-2 font-medium">Password</label>
             <input
               type="password"
+              name="password"
               placeholder="Create password"
-              className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={formData.password}
+              onChange={handleChange}
+              className="w-full px-4 py-3 border rounded-lg"
             />
           </div>
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700"
+            className="w-full bg-blue-600 text-white py-3 rounded-lg"
           >
             Register
           </button>
@@ -46,7 +85,7 @@ function Register() {
 
         <p className="text-center mt-5">
           Already have an account?{" "}
-          <Link to="/login" className="text-blue-600 font-semibold">
+          <Link to="/login" className="text-blue-600">
             Login
           </Link>
         </p>
