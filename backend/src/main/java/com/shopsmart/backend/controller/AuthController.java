@@ -4,6 +4,7 @@ import com.shopsmart.backend.dto.LoginRequest;
 import com.shopsmart.backend.dto.RegisterRequest;
 import com.shopsmart.backend.entity.User;
 import com.shopsmart.backend.repository.UserRepository;
+import com.shopsmart.backend.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,9 @@ public class AuthController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @PostMapping("/register")
     public String register(@RequestBody RegisterRequest request) {
@@ -44,7 +48,8 @@ public class AuthController {
                         request.getPassword(),
                         user.get().getPassword()
                 )) {
-            return "Login successful";
+
+            return jwtUtil.generateToken(request.getEmail());
         }
 
         return "Invalid credentials";
