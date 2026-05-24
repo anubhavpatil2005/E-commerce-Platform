@@ -19,17 +19,23 @@ function Login() {
     });
   };
 
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       const response = await api.post("/auth/login", formData);
 
-      if (response.data === "Login successful") {
-        login({
-          name: formData.email.split("@")[0],
-          email: formData.email,
-        });
+      const token = response.data;
+
+      if (token && token.startsWith("ey")) {
+        login(
+          {
+            name: formData.email.split("@")[0],
+            email: formData.email,
+          },
+          token
+        );
 
         alert("Login successful!");
         navigate("/");
