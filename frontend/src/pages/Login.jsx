@@ -1,23 +1,45 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import api from "../services/api";
 
 function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  const { login } = useAuth();
   const navigate = useNavigate();
+  const { login } = useAuth();
 
-  const handleSubmit = (e) => {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    login({
-      name: "Anubhav",
-      email,
-    });
+    try {
+      const response = await api.post("/auth/login", formData);
 
-    navigate("/");
+      if (response.data === "Login successful") {
+        login({
+          name: formData.email.split("@")[0],
+          email: formData.email,
+        });
+
+        alert("Login successful!");
+        navigate("/");
+      } else {
+        alert("Invalid credentials");
+      }
+    } catch (error) {
+      alert("Login failed");
+      console.error(error);
+    }
   };
 
   return (
@@ -32,9 +54,10 @@ function Login() {
             <label className="block mb-2 font-medium">Email</label>
             <input
               type="email"
+              name="email"
               placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={formData.email}
+              onChange={handleChange}
               className="w-full px-4 py-3 border rounded-lg"
             />
           </div>
@@ -43,9 +66,10 @@ function Login() {
             <label className="block mb-2 font-medium">Password</label>
             <input
               type="password"
+              name="password"
               placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={formData.password}
+              onChange={handleChange}
               className="w-full px-4 py-3 border rounded-lg"
             />
           </div>
