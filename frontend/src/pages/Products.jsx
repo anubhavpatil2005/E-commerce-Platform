@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import api from "../services/api";
 
 function Products() {
@@ -25,9 +26,10 @@ function Products() {
 
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
         {products.map((product) => (
-          <div
+          <Link
+            to={`/product/${product.id}`}
             key={product.id}
-            className="bg-white rounded-2xl shadow-md p-5 hover:shadow-xl transition"
+            className="bg-white rounded-2xl shadow-md p-5 hover:shadow-xl transition block"
           >
             <img
               src={product.imageUrl}
@@ -50,7 +52,7 @@ function Products() {
             <button className="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">
               Add to Cart
             </button>
-          </div>
+          </Link>
         ))}
       </div>
     </div>
