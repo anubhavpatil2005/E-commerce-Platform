@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import api from "../services/api";
+import { useCart } from "../context/CartContext";
 
 function ProductDetails() {
   const { id } = useParams();
+
+  const { addToCart } = useCart();
 
   const [product, setProduct] = useState(null);
 
@@ -55,7 +58,10 @@ function ProductDetails() {
             Stock: {product.stock}
           </p>
 
-          <button className="mt-8 bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700">
+          <button
+            onClick={() => addToCart(product)}
+            className="mt-8 bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700"
+          >
             Add to Cart
           </button>
         </div>
